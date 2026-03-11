@@ -25,19 +25,26 @@ class Store (MethodView):
     
 
     def delete (self,store_id):
-        try:
-            del stores[store_id]
-            return {"message":"deleted successfully"}
-        except KeyError:
-            abort(404,message="Store Not found") 
+
+        store =StoreModel.query.get_or_404(store_id)
+
+        db.session.delete(store)
+        db.session.commit()
+        return {"message":"deleted successfully"}
+        # try:
+        #     del stores[store_id]
+        #     return {"message":"deleted successfully"}
+        # except KeyError:
+        #     abort(404,message="Store Not found") 
 
 @blp.route("/store")
 class StoreList (MethodView):
 
     @blp.response(200,StoreSchema(many=True))
     def get (self) :
+        return StoreModel.query.all()
     
-        return stores.values()
+        # return stores.values()
     
     @blp.arguments(StoreSchema)
     @blp.response(201,StoreSchema)
