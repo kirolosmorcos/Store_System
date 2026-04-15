@@ -11,7 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 blp= Blueprint("tags",__name__,description="Operations on tags")
 
-@blp.route("/store/<string:store_id>/tags")
+@blp.route("/store/<int:store_id>/tags")
 class TagList(MethodView):
     @blp.response(200,TagSchema(many=True))
     def get(self,store_id):
@@ -53,7 +53,7 @@ class Tag(MethodView):
             abort(400,message="tag is linked to item")
     
     
-@blp.route("/item/<string:item_id>/tag/<string:tag_id>")
+@blp.route("/item/<int:item_id>/tag/<int:tag_id>")
 class LinkTagToItem(MethodView):
     @blp.response(201,TagSchema)
     def post(self,item_id,tag_id):

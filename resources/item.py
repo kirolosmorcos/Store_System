@@ -10,11 +10,14 @@ from models import ItemModel
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
 
+from flask_jwt_extended import jwt_required,get_jwt
+
 blp= Blueprint("items",__name__,description="Operations on items")
 
-@blp.route("/item/<string:item_id>")
+@blp.route("/item/<int:item_id>")
 class Item(MethodView):
     
+    @jwt_required()
     @blp.response(200,ItemSchema)
     def get (self,item_id):
         item = ItemModel.query.get_or_404(item_id)
@@ -24,7 +27,12 @@ class Item(MethodView):
         # except KeyError:
         #     abort(404,message="Item Not found")
     
+    @jwt_required()
     def delete (self, item_id):
+
+        jwt=get_jwt()
+        if not jwt.get("isadmin"):
+            abort(401,message="Unauthorized should be admin")
 
         item =ItemModel.query.get_or_404(item_id)
 
@@ -37,6 +45,7 @@ class Item(MethodView):
         # except KeyError:
         #     abort(404,message="Item Not found")
 
+    @jwt_required()
     @blp.arguments(ItemUpdateSchema)
     @blp.response(200,ItemSchema)
     def put (self,item_data,item_id):
@@ -67,6 +76,7 @@ class ItemList(MethodView):
         return ItemModel.query.all()
         # return items.values()  
    
+    @jwt_required(fresh=True)
     @blp.arguments(ItemSchema)
     @blp.response(201,ItemSchema)
     def post(self,item_data):
@@ -81,6 +91,8 @@ class ItemList(MethodView):
             abort(400,message="Failed while inserting item.")
 
         
+       
+
        
         # for dictionaries
         # for item in items:

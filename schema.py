@@ -2,12 +2,12 @@ from marshmallow import Schema, fields
 
 
 class PlainItemSchema(Schema):
-    id = fields.Str(dump_default=True)
+    id = fields.Str(dump_only=True)
     name=fields.Str(required=True)
     price=fields.Str(required=True)
 
 class PlainTagSchema(Schema):
-    id = fields.Str(dump_default=True)
+    id = fields.Str(dump_only=True)
     name=fields.Str(required=True)
 
 class PlainStoreSchema(Schema):
@@ -40,4 +40,7 @@ class TagAndItemSchema(Schema):
     item =fields.Nested(ItemSchema)
     tag=fields.Nested(TagSchema)
 
-   
+class UserSchema(Schema):
+    id=fields.Int(dump_only=True)
+    username=fields.Str(required=True)
+    password=fields.Str(required=True)
